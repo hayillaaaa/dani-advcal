@@ -1,302 +1,551 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>for dani</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Iosevka Charon', 'JetBrains Mono', monospace;
+    }
 
-<title>for dani</title>
+    html, body {
+      width: 100%;
+      min-height: 100dvh;
+      background-color: #D9FAF4;
+      overflow-x: hidden;
+    }
 
-<!-- Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+    /* Main Responsive Wrapper */
+    .app-container {
+      width: 100%;
+      min-height: 100dvh;
+      background: #D9FAF4;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-<style>
-* { box-sizing: border-box; image-rendering: pixelated; }
+    /* Screen Management */
+    .screen {
+      display: none;
+      width: 100%;
+      min-height: 100dvh;
+      position: relative;
+      z-index: 2;
+    }
+    .screen.active {
+      display: flex;
+      flex-direction: column;
+    }
 
-body {
-  margin: 0;
-  min-height: 100vh;
-  background: repeating-linear-gradient(
-    45deg,
-    #0f766e 0px,
-    #0f766e 12px,
-    #134e4a 12px,
-    #134e4a 24px
-  );
-  font-family: 'VT323', monospace;
-  color: #9df7ef;
-  overflow-x: hidden;
-}
+    /* Full-Viewport Decorative Ice Creams Layer */
+    .decorations {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 1;
+    }
+    .icecream-deco {
+      width: clamp(60px, 15vw, 100px);
+      height: clamp(60px, 15vw, 100px);
+      position: absolute;
+      object-fit: contain;
+    }
 
-/* ❄️ Snow */
-.snow { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
-.snowflake {
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  background: white;
-  animation: fall linear infinite;
-}
-@keyframes fall { to { transform: translateY(110vh); } }
+    /* ================= 1. HOMEPAGE ================= */
+    #homepage {
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      padding: 24px;
+    }
+    .hero-icecream {
+      width: clamp(190px, 55vw, 310px);
+      height: clamp(190px, 55vw, 310px);
+      object-fit: contain;
+      transition: transform 0.25s ease;
+    }
+    .hero-icecream:hover {
+      transform: scale(1.06);
+    }
 
-/* Screens */
-.screen {
-  position: fixed;
-  inset: 0;
-  background: rgba(4,47,46,0.95);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  z-index: 5;
-  text-align: center;
-}
+    /* ================= 2. LOGIN PAGE ================= */
+    #login-page {
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .login-card-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 340px;
+      z-index: 2;
+    }
+    .login-card-shadow {
+      width: 100%;
+      height: 100%;
+      background: #0F2A2A;
+      border-radius: 6px;
+      position: absolute;
+      top: 8px;
+      left: 8px;
+    }
+    .login-card {
+      width: 100%;
+      background: #00BFA6;
+      border-radius: 6px;
+      border: 2px solid #0F2A2A;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(24px, 6vw, 34px) clamp(18px, 5vw, 26px);
+    }
+    .login-title {
+      color: #0F2A2A;
+      font-size: clamp(28px, 7vw, 36px);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .password-input {
+      width: 100%;
+      height: 54px;
+      background: #D9FAF4;
+      border: none;
+      padding: 0 14px;
+      font-size: clamp(14px, 3.8vw, 16px);
+      color: #0F2A2A;
+      outline: none;
+    }
+    .password-input::placeholder {
+      color: #0F2A2A;
+      opacity: 0.85;
+    }
+    .error-msg {
+      color: #8B1E1E;
+      font-size: 13px;
+      margin-top: 10px;
+      min-height: 18px;
+      text-align: center;
+      font-weight: 500;
+    }
 
-/* PRESS START */
-.start-text {
-  font-family: 'Press Start 2P', cursive;
-  font-size: 1.4rem;
-  text-shadow: 4px 4px #042f2e;
-  animation: blink 1s steps(1) infinite;
-}
-@keyframes blink { 50% { opacity: 0; } }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+    .shake {
+      animation: shake 0.25s ease-in-out 2;
+    }
 
-/* Password */
-.password-box {
-  background: #ccfbf1; 
-  color: #042f2e; 
-  padding: 24px; 
-  border: 6px solid #042f2e;
-  box-shadow: 10px 10px #042f2e;
-  width: 90%;
-  max-width: 320px;
-}
-.password-box input {
-  width: 100%;
-  padding: 12px;
-  font-size: 1.4rem;
-  margin-top: 12px;
-}
-.password-box button {
-  margin-top: 12px;
-  padding: 10px;
-  font-family: 'Press Start 2P', cursive;
-  background: #14b8a6; 
-  border: 4px solid #042f2e
-}
-.password-box p { display: none; color: red; }
+    /* ================= 3. MAIN PAGE ================= */
+    #main-page {
+      align-items: center;
+      padding: clamp(32px, 6vh, 55px) clamp(20px, 6vw, 40px) 60px;
+    }
+    .main-content-box {
+      width: 100%;
+      max-width: 440px;
+      position: relative;
+      z-index: 2;
+    }
+    .calendar-title {
+      color: #0F2A2A;
+      font-size: clamp(24px, 6vw, 34px);
+      text-align: center;
+      margin-bottom: clamp(22px, 4vh, 32px);
+    }
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(14px, 4vw, 22px);
+      width: 100%;
+    }
+    .day-btn-wrapper {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      cursor: pointer;
+    }
+    .day-btn-shadow {
+      width: 100%;
+      height: 100%;
+      background: #0F2A2A;
+      border-radius: 6px;
+      position: absolute;
+      top: 4px;
+      left: 4px;
+    }
+    .day-btn {
+      width: 100%;
+      height: 100%;
+      background: #00BFA6;
+      border-radius: 6px;
+      border: 2px solid #0F2A2A;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #0F2A2A;
+      font-size: clamp(26px, 7vw, 36px);
+      transition: transform 0.1s ease, background 0.2s ease;
+      user-select: none;
+    }
+    .day-btn-wrapper:hover .day-btn {
+      transform: translate(-1px, -1px);
+    }
+    .day-btn-wrapper:active .day-btn {
+      transform: translate(3px, 3px);
+    }
 
-/* Main */
-.wrapper {
-  display: none;
-  max-width: 960px;
-  margin: auto;
-  padding: 20px;
-  z-index: 2;
-}
+    /* Locked Day Styling */
+    .day-btn-wrapper.locked .day-btn {
+      background: #38cbb7;
+      opacity: 0.9;
+    }
+    .lock-badge {
+      position: absolute;
+      top: 5px;
+      right: 6px;
+      font-size: clamp(10px, 2.8vw, 13px);
+    }
 
-h1 {
-  text-align: center;
-  font-family: 'Press Start 2P', cursive;
-  font-size: 1.1rem;
-  text-shadow: 4px 4px #042f2e;
-  margin-bottom: 20px;
-}
+    .next-btn {
+      margin-top: 28px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 6px;
+      color: #0F2A2A;
+      font-size: clamp(18px, 4.5vw, 24px);
+      cursor: pointer;
+    }
 
-/* Calendar */
-.calendar {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 14px;
-}
+    /* ================= 4. DAYS TEMPLATE (MODAL) ================= */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 42, 42, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 50;
+      padding: 20px;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .day-modal-card {
+      width: 100%;
+      max-width: 400px;
+      min-height: 230px;
+      background: #00BFA6;
+      border-radius: 6px;
+      border: 2px solid #0F2A2A;
+      padding: clamp(20px, 5vw, 26px);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 7px 7px 0px #0F2A2A;
+      animation: popIn 0.2s ease;
+    }
+    @keyframes popIn {
+      from { transform: scale(0.92); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .close-modal {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      color: #D9FAF4;
+      font-size: 20px;
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+    .modal-day-title {
+      text-align: center;
+      color: #D9FAF4;
+      font-size: clamp(30px, 7vw, 38px);
+      margin-bottom: 16px;
+    }
+    .modal-message {
+      color: #D9FAF4;
+      font-size: clamp(14px, 3.8vw, 16px);
+      line-height: 1.5;
+      margin-bottom: 22px;
+      white-space: pre-line;
+    }
+    .modal-clue {
+      color: #D9FAF4;
+      font-size: clamp(14px, 3.8vw, 16px);
+      font-weight: 500;
+    }
 
-.day {
-  position: relative;
-  padding-top: 100%;
-}
-
-.day-inner {
-  position: absolute;
-  inset: 0;
-  background: #14b8a6; 
-  border: 4px solid #042f2e;
-  box-shadow: 6px 6px #042f2e;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Press Start 2P', cursive;
-  cursor: pointer;
-}
-
-/* Popup */
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(4,47,46,0.8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s;
-  z-index: 4;
-}
-.overlay.active {
-  opacity: 1;
-  pointer-events: all;
-}
-
-.popup-card {
-  background: #ccfbf1; 
-  color: #042f2e;
-  width: 92%;
-  max-width: 480px;
-  padding: 24px;
-  border: 6px solid #042f2e; 
-  box-shadow: 10px 10px #042f2e;
-  transform: scale(0.6);
-  transition: transform 0.3s steps(6);
-  font-size: 1.4rem;
-}
-.overlay.active .popup-card { transform: scale(1); }
-
-.close-btn {
-  margin-bottom: 10px;
-  padding: 8px;
-  font-family: 'Press Start 2P', cursive;
-  background: #14b8a6; 
-  border: 4px solid #042f2e;
-}
-
-/* 📱 MOBILE */
-@media (max-width: 768px) {
-  .calendar { grid-template-columns: repeat(3, 1fr); }
-  .day-inner { font-size: 0.75rem; }
-  h1 { font-size: 1rem; }
-}
-
-@media (max-width: 430px) {
-  .calendar { grid-template-columns: repeat(2, 1fr); }
-}
-</style>
+    /* Toast Notification for Locked Days */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(120px);
+      background: #0F2A2A;
+      color: #D9FAF4;
+      padding: 12px 20px;
+      border-radius: 6px;
+      font-size: clamp(13px, 3.5vw, 15px);
+      z-index: 100;
+      transition: transform 0.3s ease;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+      width: max-content;
+      max-width: 90%;
+    }
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
 </head>
-
 <body>
 
-<div class="snow" id="snow"></div>
+  <div class="app-container">
 
-<!-- PRESS START -->
-<div class="screen" id="startScreen">
-  <div class="start-text">PRESS START</div>
-</div>
+    <!-- 1. HOMEPAGE -->
+    <div id="homepage" class="screen active" onclick="goToScreen('login-page')">
+      <img class="hero-icecream" src="C:\Users\alli\Desktop\Programming\ice cream.png" alt="Click to start" onerror="this.src='https://placehold.co/300x300/D9FAF4/0F2A2A?text=Ice+Cream'" />
+    </div>
 
-<!-- PASSWORD -->
-<div class="screen" id="passwordScreen" style="display:none;">
-  <div class="password-box">
-    <h3>DANI'S ALLERGY ?!</h3>
-    <input type="password" id="passwordInput">
-    <button onclick="checkPassword()">UNLOCK</button>
-    <p id="errorMsg">WRONG PASSWORD</p>
+    <!-- 2. LOG IN PAGE -->
+    <div id="login-page" class="screen">
+      <div class="decorations" id="login-decorations"></div>
+
+      <div class="login-card-wrapper" id="login-box">
+        <div class="login-card-shadow"></div>
+        <div class="login-card">
+          <div class="login-title">Your allergy ?!</div>
+          <input 
+            type="text" 
+            id="password-field" 
+            class="password-input" 
+            placeholder="Input password here" 
+            onkeypress="handleLogin(event)"
+          />
+          <div class="error-msg" id="login-error"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. MAIN PAGE -->
+    <div id="main-page" class="screen">
+      <div class="decorations" id="main-decorations"></div>
+
+      <div class="main-content-box">
+        <div class="calendar-title">DANI’s advent calendar</div>
+        <div class="calendar-grid" id="calendar-grid"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. DAYS TEMPLATE MODAL -->
+    <div id="day-modal" class="modal-overlay" onclick="closeModal(event)">
+      <div class="day-modal-card" onclick="event.stopPropagation()">
+        <button class="close-modal" onclick="forceCloseModal()">✕</button>
+        <div class="modal-day-title" id="modal-title">Day 01 !?</div>
+        <div class="modal-message" id="modal-body"></div>
+        <div class="modal-clue" id="modal-clue">Clue : </div>
+      </div>
+    </div>
+
+    <!-- LOCKED MESSAGE TOAST -->
+    <div id="toast" class="toast"></div>
+
   </div>
-</div>
 
-<!-- MAIN -->
-<div class="wrapper" id="mainContent">
-  <h1>🎄 DANI'S ADVENT CALENDAR 💚</h1>
-  <div class="calendar" id="calendar"></div>
-</div>
+  <script>
+    // Palitan ito ng actual filename/path ng pixel ice cream image mo
+    const ICECREAM_IMAGE = "ice cream.png";
+    const FALLBACK_ICECREAM = "https://placehold.co/95x95/transparent/0F2A2A?text=🍦";
 
-<div class="overlay" id="overlay">
-  <div class="popup-card">
-    <button class="close-btn">CLOSE</button>
-    <div id="popupContent"></div>
-  </div>
-</div>
+    // Password Setting
+    const CORRECT_PASSWORD = "pineapple";
 
-<script>
-/* PASSWORD */
-const CORRECT_PASSWORD = "pineapples";
+    // Target Year & Month (11 = December sa JavaScript dahil 0 = January)
+    const TARGET_YEAR = 2026;
+    const TARGET_MONTH = 11; // December
 
-const startScreen = document.getElementById("startScreen");
-const passwordScreen = document.getElementById("passwordScreen");
+    // =========================================================================
+    // I-EDIT DITO ANG MESSAGE AT CLUE PARA SA BAWAT ARAW (DAY 1 HANGGANG DAY 24)
+    // =========================================================================
+    const adventContents = {
+      1:  { message: "Message for Day 1 goes here!", clue: "Clue for Day 1" },
+      2:  { message: "Message for Day 2 goes here!", clue: "Clue for Day 2" },
+      3:  { message: "Message for Day 3 goes here!", clue: "Clue for Day 3" },
+      4:  { message: "Message for Day 4 goes here!", clue: "Clue for Day 4" },
+      5:  { message: "Message for Day 5 goes here!", clue: "Clue for Day 5" },
+      6:  { message: "Message for Day 6 goes here!", clue: "Clue for Day 6" },
+      7:  { message: "Message for Day 7 goes here!", clue: "Clue for Day 7" },
+      8:  { message: "Message for Day 8 goes here!", clue: "Clue for Day 8" },
+      9:  { message: "Message for Day 9 goes here!", clue: "Clue for Day 9" },
+      10: { message: "Message for Day 10 goes here!", clue: "Clue for Day 10" },
+      11: { message: "Message for Day 11 goes here!", clue: "Clue for Day 11" },
+      12: { message: "Message for Day 12 goes here!", clue: "Clue for Day 12" },
+      13: { message: "Message for Day 13 goes here!", clue: "Clue for Day 13" },
+      14: { message: "Message for Day 14 goes here!", clue: "Clue for Day 14" },
+      15: { message: "Message for Day 15 goes here!", clue: "Clue for Day 15" },
+      16: { message: "Message for Day 16 goes here!", clue: "Clue for Day 16" },
+      17: { message: "Message for Day 17 goes here!", clue: "Clue for Day 17" },
+      18: { message: "Message for Day 18 goes here!", clue: "Clue for Day 18" },
+      19: { message: "Message for Day 19 goes here!", clue: "Clue for Day 19" },
+      20: { message: "Message for Day 20 goes here!", clue: "Clue for Day 20" },
+      21: { message: "Message for Day 21 goes here!", clue: "Clue for Day 21" },
+      22: { message: "Message for Day 22 goes here!", clue: "Clue for Day 22" },
+      23: { message: "Message for Day 23 goes here!", clue: "Clue for Day 23" },
+      24: { message: "Merry Christmas Eve, Dani! Message for Day 24 goes here!", clue: "Clue for Day 24" }
+    };
 
-startScreen.onclick = () => {
-  startScreen.style.display = "none";
-  passwordScreen.style.display = "flex";
-};
+    // Check kung naka-unlock na ang specific day
+    function isDayUnlocked(day) {
+      const now = new Date();
+      const unlockDate = new Date(TARGET_YEAR, TARGET_MONTH, day, 0, 0, 0);
+      return now >= unlockDate;
+    }
 
-function checkPassword() {
-  const input = document.getElementById("passwordInput").value;
-  const error = document.getElementById("errorMsg");
-  if (input === CORRECT_PASSWORD) {
-    passwordScreen.style.display = "none";
-    document.getElementById("mainContent").style.display = "block";
-  } else {
-    error.style.display = "block";
-  }
-}
+    // Navigation
+    function goToScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(screenId).classList.add('active');
+      window.scrollTo(0, 0);
+    }
 
-/* ❄️ Snow */
-const snow = document.getElementById("snow");
-for (let i = 0; i < 80; i++) {
-  const s = document.createElement("div");
-  s.className = "snowflake";
-  s.style.left = Math.random() * 100 + "vw";
-  s.style.animationDuration = 6 + Math.random() * 8 + "s";
-  s.style.animationDelay = Math.random() * -20 + "s";
-  snow.appendChild(s);
-}
+    // Login Handler
+    function handleLogin(event) {
+      if (event.key === 'Enter') {
+        const inputVal = document.getElementById('password-field').value.trim().toLowerCase();
+        const errorEl = document.getElementById('login-error');
+        const loginBox = document.getElementById('login-box');
 
-/* ✉️ LETTERS YOU CAN EDIT */
-const letters = [
-  "Day 1: Your first Christmas message 💖",
-  "Day 2: A cozy little reminder 🎄",
-  "Day 3: Something sweet just for you ✨",
-  "Day 4: Pixel hugs and warm thoughts 💕",
-  "Day 5: You make December brighter ❄️",
-  "Day 6: A small note full of love 💌",
-  "Day 7: You’re doing amazing 🌟",
-  "Day 8: Sending you comfort today ☕",
-  "Day 9: Another reason to smile 😊",
-  "Day 10: Christmas magic is close 🎅",
-  "Day 11: A quiet moment just for you 💭",
-  "Day 12: Halfway there 🎄",
-  "Day 13: Thank you for existing 💗",
-  "Day 14: Warm wishes always 🔔",
-  "Day 15: You are appreciated 💞",
-  "Day 16: Hope today feels gentle 🌙",
-  "Day 17: Almost Christmas 🎁",
-  "Day 18: A little joy for today ✨",
-  "Day 19: You matter so much 💖",
-  "Day 20: Cozy thoughts coming your way ❄️",
-  "Day 21: Christmas is near 🎄",
-  "Day 22: Just a reminder you’re loved 💕",
-  "Day 23: Tomorrow is special 🌟",
-  "Day 24: Merry Christmas 💝"
-];
+        if (inputVal === CORRECT_PASSWORD.toLowerCase()) {
+          errorEl.textContent = "";
+          goToScreen('main-page');
+        } else {
+          errorEl.textContent = "Wrong allergy! Try again.";
+          loginBox.classList.remove('shake');
+          void loginBox.offsetWidth;
+          loginBox.classList.add('shake');
+        }
+      }
+    }
 
-/* Calendar logic */
-const calendar = document.getElementById("calendar");
-const overlay = document.getElementById("overlay");
-const popupContent = document.getElementById("popupContent");
+    // Toast Notification
+    let toastTimeout;
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2800);
+    }
 
-letters.forEach((text, i) => {
-  const day = document.createElement("div");
-  day.className = "day";
-  day.innerHTML = `<div class="day-inner">${i + 1}</div>`;
-  day.onclick = () => {
-    popupContent.innerHTML = `<h3>DAY ${i + 1}</h3><p>${text}</p>`;
-    overlay.classList.add("active");
-  };
-  calendar.appendChild(day);
-});
+    // Generate 1-24 Grid Boxes
+    const gridContainer = document.getElementById('calendar-grid');
+    for (let day = 1; day <= 24; day++) {
+      const unlocked = isDayUnlocked(day);
+      const wrapper = document.createElement('div');
+      wrapper.className = `day-btn-wrapper ${unlocked ? '' : 'locked'}`;
 
-document.querySelector(".close-btn").onclick =
-overlay.onclick = e => {
-  if (e.target === overlay || e.target.classList.contains("close-btn")) {
-    overlay.classList.remove("active");
-  }
-};
-</script>
+      wrapper.onclick = () => {
+        if (isDayUnlocked(day)) {
+          openDayModal(day);
+        } else {
+          showToast(`🔒 Locked! Come back on December ${day}, ${TARGET_YEAR}.`);
+        }
+      };
 
+      wrapper.innerHTML = `
+        <div class="day-btn-shadow"></div>
+        <div class="day-btn">
+          ${day}
+          ${unlocked ? '' : '<span class="lock-badge">🔒</span>'}
+        </div>
+      `;
+      gridContainer.appendChild(wrapper);
+    }
+
+    // Open Day Modal
+    function openDayModal(day) {
+      const formattedDay = day < 10 ? `0${day}` : day;
+      document.getElementById('modal-title').textContent = `Day ${formattedDay} !?`;
+
+      const data = adventContents[day] || { message: "", clue: "" };
+      document.getElementById('modal-body').textContent = data.message;
+      document.getElementById('modal-clue').textContent = `Clue : ${data.clue}`;
+      document.getElementById('day-modal').classList.add('active');
+    }
+
+    function closeModal(event) {
+      if (event.target.id === 'day-modal') {
+        forceCloseModal();
+      }
+    }
+
+    function forceCloseModal() {
+      document.getElementById('day-modal').classList.remove('active');
+    }
+
+    // Responsive Scattered Ice Cream Positions
+    function renderIceCreams(containerId, positions) {
+      const container = document.getElementById(containerId);
+      positions.forEach(pos => {
+        const img = document.createElement('img');
+        img.src = ICECREAM_IMAGE;
+        img.onerror = () => { img.src = FALLBACK_ICECREAM; };
+        img.className = 'icecream-deco';
+        img.style.left = pos.left;
+        img.style.top = pos.top;
+        img.style.transform = `rotate(${pos.rot}deg)`;
+        container.appendChild(img);
+      });
+    }
+
+    renderIceCreams('login-decorations', [
+      { left: '-3%', top: '-1%', rot: -12 },
+      { left: '68%', top: '-2%', rot: -15 },
+      { left: '24%', top: '10%', rot: 28 },
+      { left: '54%', top: '19%', rot: 52 },
+      { left: '86%', top: '20%', rot: 78 },
+      { left: '3%', top: '33%', rot: 6 },
+      { left: '82%', top: '54%', rot: -5 },
+      { left: '6%', top: '66%', rot: -32 },
+      { left: '68%', top: '70%', rot: 142 },
+      { left: '36%', top: '81%', rot: -75 },
+      { left: '-2%', top: '91%', rot: 95 },
+      { left: '88%', top: '91%', rot: 20 }
+    ]);
+
+    renderIceCreams('main-decorations', [
+      { left: '43%', top: '-3%', rot: -14 },
+      { left: '86%', top: '-1%', rot: 45 },
+      { left: '-3%', top: '7%', rot: -35 },
+      { left: '30%', top: '16%', rot: -10 },
+      { left: '84%', top: '28%', rot: 120 },
+      { left: '58%', top: '36%', rot: 12 },
+      { left: '2%', top: '47%', rot: -18 },
+      { left: '28%', top: '59%', rot: 55 },
+      { left: '80%', top: '68%', rot: 15 },
+      { left: '55%', top: '80%', rot: -82 },
+      { left: '0%', top: '90%', rot: 35 },
+      { left: '38%', top: '94%', rot: -58 }
+    ]);
+  </script>
 </body>
 </html>
